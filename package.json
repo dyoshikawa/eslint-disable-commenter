@@ -1,6 +1,6 @@
 {
   "name": "eslint-disable-commenter",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Add ESLint disable comments to existing files.",
   "bugs": {
     "url": "https://github.com/dyoshikawa/eslint-disable-commenter/issues"
@@ -14,7 +14,7 @@
   "scripts": {
     "prepare": "husky install",
     "start": "node -r esbuild-register src/index.ts",
-    "build": "esbuild src/index.ts --sourcemap --platform=node --target=node14 --outfile=dist/index.js",
+    "build": "tsc --emitDeclarationOnly --outDir dist && esbuild src/index.ts --sourcemap --platform=node --target=node14 --outfile=dist/index.js",
     "check:js": "prettier -c . && eslint --cache '**/*.ts'",
     "fix:check:js": "prettier --write . && eslint --cache --fix '**/*.ts'",
     "check:type": "tsc --noEmit",
