@@ -12,7 +12,7 @@ const main = async () => {
     .argument('<path>', 'File path patterns. Example: ./**/*.{js,jsx,ts,tsx}')
     .option(
       '-c, --config <path>',
-      'Config file path',
+      'Config file path. Example ./.eslintrc.json',
       './.eslintrc.{json,js,yaml,yml}'
     )
     .option('-o, --output-result-file [path]', 'Example: ./result.json')
@@ -41,8 +41,6 @@ const main = async () => {
   if (outputResultFilePath != null) {
     fs.writeFileSync(outputResultFilePath, JSON.stringify(result, null, 2))
   }
-
-  // if ()
 
   // eslint-disable-next-line no-restricted-syntax
   for (const item of result) {
