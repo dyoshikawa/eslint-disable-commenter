@@ -1,5 +1,7 @@
 # eslint-disable-commenter
 
+Add ESLint disable comments to existing files.
+
 ## Usage
 
 ```bash
