@@ -10,10 +10,11 @@
     "eslint-disable-commenter": "dist/index.js"
   },
   "private": false,
+  "type": "module",
   "scripts": {
     "prepare": "husky install",
     "start": "node -r esbuild-register src/index.ts",
-    "build": "esbuild src/index.ts --sourcemap --bundle --platform=node --target=node14 --outfile=dist/index.js",
+    "build": "esbuild src/index.ts --sourcemap --platform=node --target=node14 --outfile=dist/index.js",
     "check:js": "prettier -c . && eslint --cache '**/*.ts'",
     "fix:check:js": "prettier --write . && eslint --cache --fix '**/*.ts'",
     "check:type": "tsc --noEmit",
