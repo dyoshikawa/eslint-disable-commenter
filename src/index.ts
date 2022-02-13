@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { Command } from 'commander'
 import { ESLint } from 'eslint'
 import uniq from 'lodash.uniq'
