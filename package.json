@@ -50,5 +50,9 @@
       "bash -c 'npm run fix:check:js'",
       "bash -c 'npm run check'"
     ]
+  },
+  "engines": {
+    "node": "16.x",
+    "npm": "8.x"
   }
 }
