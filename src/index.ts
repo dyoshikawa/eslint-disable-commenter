@@ -8,7 +8,7 @@ const main = async () => {
   program
     .name('eslint-disable-commenter')
     .description('eslint-disable-commenter')
-    .version(process.env.npm_package_version!)
+    .version(process.env.npm_package_version ?? 'UNDEFINED_NPM_PACKAGE_VERSION')
     .argument('<path>', 'File path patterns. Example: ./**/*.{js,jsx,ts,tsx}')
     .option(
       '-c, --config <path>',
