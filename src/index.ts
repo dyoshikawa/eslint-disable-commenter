@@ -9,7 +9,7 @@ const main = async () => {
   const program = new Command()
   program
     .name('eslint-disable-commenter')
-    .description('eslint-disable-commenter')
+    .description('Add ESLint disable comments to existing files.')
     .version(process.env.npm_package_version ?? 'UNDEFINED_NPM_PACKAGE_VERSION')
     .argument('<path>', 'File path patterns. Example: ./**/*.{js,jsx,ts,tsx}')
     .option(
