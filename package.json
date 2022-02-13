@@ -1,13 +1,14 @@
 {
   "name": "eslint-disable-commenter",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Add ESLint disable comments to existing files.",
   "bugs": {
     "url": "https://github.com/dyoshikawa/eslint-disable-commenter/issues"
   },
   "homepage": "https://github.com/dyoshikawa/eslint-disable-commenter/#readme",
-  "main": "dist/index.js",
-  "bin": "dist/index.js",
+  "bin": {
+    "eslint-disable-commenter": "dist/index.js"
+  },
   "private": false,
   "scripts": {
     "prepare": "husky install",
