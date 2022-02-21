@@ -18,19 +18,20 @@ const main = async () => {
       './.eslintrc.{json,js,yaml,yml}'
     )
     .option('-o, --output-result-file [path]', 'Example: ./result.json')
-  // TODO
-  // .option('-t, --comment-type [type]', 'Value: "file" or "line"', 'file')
+    .option('-t, --comment-type [type]', 'Value: "file" or "line"', 'file')
 
   program.parse()
 
   const [filePathPatterns] = program.args
-  const { config: configPath, outputResultFile: outputResultFilePath } =
-    program.opts<{
-      config: string
-      outputResultFile?: string
-      // TODO
-      // commentType: 'file' | 'line'
-    }>()
+  const {
+    config: configPath,
+    outputResultFile: outputResultFilePath,
+    commentType,
+  } = program.opts<{
+    config: string
+    outputResultFile?: string
+    commentType?: 'file' | 'line'
+  }>()
 
   const esLint = new ESLint({
     fix: false, // Not "eslint --fix"
@@ -44,32 +45,73 @@ const main = async () => {
     fs.writeFileSync(outputResultFilePath, JSON.stringify(result, null, 2))
   }
 
-  // eslint-disable-next-line no-restricted-syntax
-  for (const item of result) {
-    if (item.messages.length === 0) {
-      // eslint-disable-next-line no-continue
-      continue
+  // file
+  if (commentType === 'file') {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const item of result) {
+      if (item.messages.length === 0) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
+
+      const ruleIds = [
+        ...uniq(
+          item.messages
+            .map(({ ruleId }) => ruleId)
+            .filter((v) => v != null) as string[]
+        ),
+      ].sort()
+
+      // Generate eslint disable comments
+      const eslintDisableComments = `${ruleIds
+        .map((ruleId) => `/* eslint ${ruleId}: 0 */`)
+        .join('\n')}\n\n`
+
+      // Get the existing contents of the file
+      const fileContent = fs.readFileSync(item.filePath).toString()
+
+      // Add comments to the beginning of the file
+      const newFileContent = eslintDisableComments + fileContent
+      fs.writeFileSync(item.filePath, newFileContent)
     }
+  }
+  // line
+  if (commentType === 'line') {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const item of result) {
+      if (item.messages.length === 0) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
 
-    const ruleIds = [
-      ...uniq(
-        item.messages
-          .map(({ ruleId }) => ruleId)
-          .filter((v) => v != null) as string[]
-      ),
-    ].sort()
+      // Get the existing contents of the file
+      const fileContent = fs.readFileSync(item.filePath).toString()
+      const fileContentArray = fileContent.split('\n')
 
-    // Generate eslint disable comments
-    const eslintDisableComments = `${ruleIds
-      .map((ruleId) => `/* eslint ${ruleId}: 0 */`)
-      .join('\n')}\n\n`
-
-    // Get the existing contents of the file
-    const fileContent = fs.readFileSync(item.filePath).toString()
-
-    // Add comments to the beginning of the file
-    const newFileContent = eslintDisableComments + fileContent
-    fs.writeFileSync(item.filePath, newFileContent)
+      let eslintDisableCommentsArray: string[] = []
+      let duplicateCount = 0
+      // index: comments line add count
+      item.messages.forEach((message, index) => {
+        eslintDisableCommentsArray.push(message.ruleId!)
+        if (index !== 0) {
+          if (item.messages[index - 1].line === message.line) {
+            duplicateCount += 1
+          } else {
+            eslintDisableCommentsArray = [message.ruleId!]
+          }
+        }
+        // Add comments line to content array
+        fileContentArray.splice(
+          item.messages[index].line + index - duplicateCount - 1,
+          eslintDisableCommentsArray.length > 1 ? 1 : 0,
+          `/* eslint-disable-next-line ${eslintDisableCommentsArray.join(
+            ','
+          )} */`
+        )
+      })
+      const newFileContent = fileContentArray.join('\n')
+      fs.writeFileSync(item.filePath, newFileContent)
+    }
   }
 }
 
