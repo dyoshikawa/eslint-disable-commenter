@@ -50,7 +50,7 @@
   },
   "volta": {
     "node": "16.14.0",
-    "npm": "8.5.1"
+    "npm": "8.19.4"
   },
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
